@@ -24,9 +24,12 @@ alias be="bundle exec"
 
 source /Users/leonsp/.iterm2_shell_integration.bash
 
+# Autocorrect
+# brew install thefuck
+# https://github.com/nvbn/thefuck
 eval "$(thefuck --alias)"
 
-# DB2
+# IBM DB2
 if [ -f "/Users/$(whoami)/sqllib/db2profile" ]; then
     . "/Users/$(whoami)/sqllib/db2profile"
 fi
