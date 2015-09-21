@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Strict mode
+set -e
+set -u
+set -o pipefail
+
+IFS=$'\n\t'
+
+gitmodified | grep "\.rb" | grep -v "schema.rb" | grep -v "^tmp/" | \
+  xargs bundle exec rubocop -Da
+gitmodified | grep "Gemfile$" | \
+  xargs bundle exec rubocop -Da 
