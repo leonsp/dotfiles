@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Strict mode
+# set -e
+set -u
+# set -o pipefail
+
+IFS=$'\n\t'
+
+gitmerge()
+{
+  USAGE="gitmerge <from branch> <to branch> [-d]"
+  [[ $# -lt 2 ]] && echo "$USAGE" && exit 1
+
+  local delete
+  local from_branch
+  local to_branch
+
+  delete="${3:-}"
+  from_branch="$1"
+  to_branch="$2"
+
+  git checkout "$from_branch"
+  [[ $? != 0 ]] && echo "Error: git checkout $from_branch"        && exit 2
+
+  git pull origin "$from_branch"
+  [[ $? != 0 ]] && echo "Error: git pull origin $from_branch"     && exit 2
+
+  git push origin "$from_branch"
+  [[ $? != 0 ]] && echo "Error: git push origin $from_branch"     && exit 2
+
+  git checkout "$to_branch"
+  [[ $? != 0 ]] && echo "Error: git checkout $to_branch"          && exit 2
+
+  git pull origin "$to_branch"
+  [[ $? != 0 ]] && echo "Error: git pull origin $to_branch"       && exit 2
+
+  git merge --no-ff "$from_branch" -m "Merge $from_branch to $to_branch"
+  [[ $? != 0 ]] && echo "Error: git merge --no-ff $from_branch"   && exit 2
+
+  git push origin "$to_branch"
+  [[ $? != 0 ]] && echo "Error: git push origin $to_branch"       && exit 2
+
+  if [[ "$delete" == "-d" ]]; then
+    git branch -d "$from_branch"
+    [[ $? != 0 ]] && echo "Error: git branch -d $from_branch"     && exit 2
+  else
+    echo "Keeping branch $from_branch"                            && exit 2
+    git checkout "$from_branch"
+  fi
+}
+
+gitmerge "$@"

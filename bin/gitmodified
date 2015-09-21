@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Strict mode
+set -e
+set -u
+set -o pipefail
+
+IFS=$'\n\t'
+
+git status | grep modified | cut -d' ' -f4
+git status | grep "new file:" | cut -d' ' -f5
