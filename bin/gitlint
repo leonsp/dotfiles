@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Strict mode
+# Don't exit on error code
+# We want all checks to run
+# set -e
+set -u
+# set -o pipefail
+
+IFS=$'\n\t'
+
+gitmodified | grep "\.rb$" | grep -v "schema.rb" | grep -v "^tmp/" | sort | uniq | \
+  xargs bundle exec rubocop -Da
+gitmodified | grep "\.jbuilder$" | grep -v "schema.rb" | grep -v "^tmp/" | sort | uniq | \
+  xargs bundle exec rubocop -Da
+[[ -f Gemfile ]] && gitmodified | grep "Gemfile$" | sort | uniq | \
+  xargs bundle exec rubocop -Da
+gitmodified | grep "\.haml$" | sort | uniq | \
+  xargs bundle exec haml-lint
+gitmodified | grep "\.js$\|\.es6$" | sort | uniq | \
+  xargs jshint --config .jshintrc
+gitmodified | grep "\.js$\|\.es6$" | sort | uniq | \
+  xargs eslint
+gitmodified | grep "\.js$"\|\.es6$ | sort | uniq | \
+  xargs gjslint --flagfile .gjslint | grep -v "E:0110:"
+gitmodified | grep "\.js$\|\.es6$" | sort | uniq | \
+  xargs jscs --config .jscs.json --fix --esnext
+gitmodified | grep "\.py$" | sort | uniq | \
+  xargs pylint

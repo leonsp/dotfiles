@@ -1,11 +1,15 @@
 #!/bin/bash
 
 # Strict mode
-set -e
+#set -e
+#set -o pipefail
 set -u
-set -o pipefail
 
 IFS=$'\n\t'
 
+# grep returns non-zero status when something is not found
+# so set -e aborts early
+
 git status | grep modified | cut -d' ' -f4
+git status | grep renamed | cut -d' ' -f7
 git status | grep "new file:" | cut -d' ' -f5

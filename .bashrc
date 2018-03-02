@@ -1,1 +1,1 @@
-#!/bin/bash
+/Users/leonsp/Dropbox/Mackup/.bashrc
