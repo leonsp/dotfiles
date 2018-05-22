@@ -1,0 +1,3 @@
+HOST ldap.cognitiveclass.ai
+PORT 636
+TLS_REQCERT ALLOW
